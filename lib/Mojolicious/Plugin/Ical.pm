@@ -6,7 +6,7 @@ Mojolicious::Plugin::Ical - Generate .ical documents
 
 =head1 VERSION
 
-0.01
+0.02
 
 =head1 DESCRIPTION
 
@@ -70,7 +70,7 @@ use POSIX         ();
 use Sys::Hostname ();
 use Text::vFile::asData;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 HELPERS
 

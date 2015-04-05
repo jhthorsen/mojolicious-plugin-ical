@@ -2,7 +2,7 @@ NAME
     Mojolicious::Plugin::Ical - Generate .ical documents
 
 VERSION
-    0.01
+    0.02
 
 DESCRIPTION
     Mojolicious::Plugin::Ical is a Mojolicious plugin for generating
@@ -44,6 +44,16 @@ SYNOPSIS
             ...
           ],
         });
+      };
+
+      # or using respond_to()
+      get '/events' => sub {
+        my $c = shift;
+        my $ical = { events => [...] };
+        $c->respond_to(
+          ical => {handler => 'ical', ical => $ical},
+          json => {json => $ical}
+        );
       };
 
 HELPERS
