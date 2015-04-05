@@ -1,5 +1,4 @@
 Changelog for Mojolicious::Plugin::Ical
 
-0.01
-       * Started project
-
+0.01     Sun Apr  5 17:45:00 2015
+       * Add Mojolicious::Plugin::Ical
