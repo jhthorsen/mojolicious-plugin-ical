@@ -53,6 +53,16 @@ L<iCalendar|http://www.kanzaki.com/docs/ical/> documents.
     });
   };
 
+  # or using respond_to()
+  get '/events' => sub {
+    my $c = shift;
+    my $ical = { events => [...] };
+    $c->respond_to(
+      ical => {handler => 'ical', ical => $ical},
+      json => {json => $ical}
+    );
+  };
+
 =cut
 
 use Mojo::Base 'Mojolicious::Plugin';
@@ -61,8 +71,6 @@ use Sys::Hostname ();
 use Text::vFile::asData;
 
 our $VERSION = '0.01';
-
-my $vfile = Text::vFile::asData->new;
 
 =head1 HELPERS
 
@@ -90,7 +98,9 @@ Register L</reply.ical> helper.
 sub register {
   my ($self, $app, $config) = @_;
 
-  $self->{properties} = $config->{properties};
+  $config->{handler} //= 'ical';
+
+  $self->{properties} = $config->{properties} || {};
   $self->{properties}{calscale}     ||= 'GREGORIAN';
   $self->{properties}{method}       ||= 'PUBLISH';
   $self->{properties}{prodid}       ||= sprintf '-//%s//NONSGML %s//EN', Sys::Hostname::hostname, $app->moniker;
@@ -99,7 +109,22 @@ sub register {
   $self->{properties}{x_wr_calname} ||= $app->moniker;
   $self->{properties}{x_wr_timezone} ||= POSIX::strftime('%Z', localtime);
 
+  $self->{vfile} ||= Text::vFile::asData->new;
+
   $app->helper('reply.ical' => sub { $self->_reply_ical(@_) });
+  $app->types->type(ical => 'text/calendar');
+
+  if ($config->{handler}) {
+    $app->renderer->add_handler(
+      $config->{handler},
+      sub {
+        my ($renderer, $c, $output, $options) = @_;
+        return undef unless my $ical = $c->stash('ical');
+        $$output = join '', map {"$_\n"} $self->_render_ical($c, $ical);
+        return 1;
+      }
+    );
+  }
 }
 
 sub _event_to_properties {
@@ -124,7 +149,7 @@ sub _event_to_properties {
   $properties;
 }
 
-sub _reply_ical {
+sub _render_ical {
   my ($self, $c, $data) = @_;
   my %properties = %{$data->{properties} || {}};
   my $ical = {};
@@ -155,8 +180,13 @@ sub _reply_ical {
     push @{$ical->{objects}}, {properties => _event_to_properties($event, \%defaults), type => 'VEVENT'};
   }
 
+  return $self->{vfile}->generate_lines($ical);
+}
+
+sub _reply_ical {
+  my ($self, $c, $data) = @_;
   $c->res->headers->content_type('text/calendar');
-  $c->render(text => join "\n", $vfile->generate_lines($ical));
+  $c->render(text => join '', map {"$_\n"} $self->_render_ical($c, $data));
 }
 
 sub _md5 {
