@@ -30,13 +30,7 @@ L<iCalendar|http://www.kanzaki.com/docs/ical/> documents.
     }
   };
 
-C<properties> can also be passed as argument to L</reply.ical>:
-
-  $c->reply->ical({ properties => {...}, events => [...] });
-
-=head2 Controller
-
-  sub ical {
+  get '/calendar' => sub {
     my $c = shift;
     $c->reply->ical({
       events => [
@@ -49,7 +43,7 @@ C<properties> can also be passed as argument to L</reply.ical>:
           last_modified => $date,  # defaults to "now"
           location      => $str,   # http://www.kanzaki.com/docs/ical/location.html
           sequence      => $int,   # default 0
-          status        => $str,   # http://www.kanzaki.com/docs/ical/status.html
+          status        => $str,   # default CONFIRMED
           summary       => $str,   # http://www.kanzaki.com/docs/ical/summary.html
           transp        => $str,   # default OPAQUE
           uid           => $str,   # default to md5 of the values @hostname
@@ -57,7 +51,7 @@ C<properties> can also be passed as argument to L</reply.ical>:
         ...
       ],
     });
-  }
+  };
 
 =cut
 
@@ -78,11 +72,16 @@ my $vfile = Text::vFile::asData->new;
 
 Will render a iCal document with the Content-Type "text/calender".
 
-See L</Controller> for example code.
+C<events> is an array ref of calendar events.
+C<properties> will override the defaults given to L</register>.
+
+See L</SYNOPSIS> for more details.
 
 =head1 METHODS
 
 =head2 register
+
+  plugin ical => {properties => {...}};
 
 Register L</reply.ical> helper.
 
@@ -109,15 +108,19 @@ sub _event_to_properties {
 
   for my $k (keys %$event) {
     my $v = $event->{$k} //= '';
-    my $p = $k;
-    $p = uc $k && $p =~ s!_!i!g if $p =~ /^[a-z]/;
-    $properties->{$p} = [{value => $event->{$k}}];
+    my $p = _vkey($k);
+    if (UNIVERSAL::isa($v, 'Mojo::Date')) {
+      $v = $v->to_datetime;
+      $v =~ s![:-]!!g;    # 1994-11-06T08:49:37Z => 19941106T084937Z
+    }
+    $properties->{$p} = [{value => $v}];
   }
 
-  $properties->{dtstamp}  ||= $defaults->{now};
-  $properties->{sequence} ||= 0;
-  $properties->{transp}   ||= 'OPAQUE';
-  $properties->{uid}      ||= sprintf '%s@%s', _md5($event), $defaults->{hostname};
+  $properties->{DTSTAMP}  ||= [{value => $defaults->{now}}];
+  $properties->{SEQUENCE} ||= [{value => 0}];
+  $properties->{STATUS}   ||= [{value => 'CONFIRMED'}];
+  $properties->{TRANSP}   ||= [{value => 'OPAQUE'}];
+  $properties->{UID}      ||= [{value => sprintf '%s@%s', _md5($event), $defaults->{hostname}}];
   $properties;
 }
 
@@ -140,8 +143,7 @@ sub _reply_ical {
   $properties{x_wr_timezone} ||= $self->{properties}{x_wr_timezone};
 
   for my $k (keys %properties) {
-    my $p = $k;
-    $p = uc $k && $p =~ s!_!i!g if $p =~ /^[a-z]/;
+    my $p = _vkey($k);
     $ical->{properties}{$p} = [{value => $properties{$k}}];
   }
 
@@ -154,12 +156,19 @@ sub _reply_ical {
   }
 
   $c->res->headers->content_type('text/calendar');
-  $c->render(text => $vfile->generate_lines({objects => [$ical]}));
+  $c->render(text => join "\n", $vfile->generate_lines($ical));
 }
 
 sub _md5 {
   my $data = $_[0];
   Mojo::Util::md5_sum(join ':', map {"$_=$data->{$_}"} grep { $_ ne 'dtstamp' } sort keys %$data);
+}
+
+sub _vkey {
+  return $_[0] if $_[0] =~ /^[A-Z]/;
+  local $_ = uc $_[0];
+  s!_!-!g;
+  $_;
 }
 
 =head1 COPYRIGHT AND LICENSE
