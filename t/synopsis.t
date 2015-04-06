@@ -31,7 +31,7 @@ $t->get_ok('/calendar')->status_is(200)->header_is('Content-Type', 'text/calenda
 
 $t->content_like(qr{^BEGIN:VCALENDAR.*END:VCALENDAR$}s);
 $t->content_like(qr{^CALSCALE:GREGORIAN}m);
-$t->content_like(qr{^PRODID:-//thinkbat//NONSGML synopsis//EN}m);
+$t->content_like(qr{^PRODID:-//\w[^\/]+//NONSGML synopsis//EN}m);
 $t->content_like(qr{^METHOD:PUBLISH}m);
 $t->content_like(qr{^VERSION:2\.0}m);
 $t->content_like(qr{^X-WR-CALDESC:My awesome calendar}m);

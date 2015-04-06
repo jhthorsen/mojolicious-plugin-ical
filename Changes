@@ -1,5 +1,9 @@
 Changelog for Mojolicious::Plugin::Ical
 
+0.03     Mon Apr  6 08:59:39 2015
+       * Improved documentation
+       * Fix t/synopsis.t
+
 0.02     Sun Apr  5 18:22:09 2015
        * Can respond_to(ical => {handler => 'ical', ical => $data})
 

@@ -6,12 +6,7 @@ Mojolicious::Plugin::Ical - Generate .ical documents
 
 =head1 VERSION
 
-0.02
-
-=head1 DESCRIPTION
-
-L<Mojolicious::Plugin::Ical> is a L<Mojolicious> plugin for generating
-L<iCalendar|http://www.kanzaki.com/docs/ical/> documents.
+0.03
 
 =head1 SYNOPSIS
 
@@ -63,6 +58,29 @@ L<iCalendar|http://www.kanzaki.com/docs/ical/> documents.
     );
   };
 
+=head1 DESCRIPTION
+
+L<Mojolicious::Plugin::Ical> is a L<Mojolicious> plugin for generating
+L<iCalendar|http://www.kanzaki.com/docs/ical/> documents.
+
+This plugin will...
+
+=over 4
+
+=item *
+
+Add the helper L</reply.ical>.
+
+=item *
+
+Add ".ical" type to L<Mojolicious/types>.
+
+=item *
+
+Add a handler "ical" to L<Mojolicious/renderer>.
+
+=back
+
 =cut
 
 use Mojo::Base 'Mojolicious::Plugin';
@@ -70,7 +88,7 @@ use POSIX         ();
 use Sys::Hostname ();
 use Text::vFile::asData;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 =head1 HELPERS
 

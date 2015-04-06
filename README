@@ -2,11 +2,7 @@ NAME
     Mojolicious::Plugin::Ical - Generate .ical documents
 
 VERSION
-    0.02
-
-DESCRIPTION
-    Mojolicious::Plugin::Ical is a Mojolicious plugin for generating
-    iCalendar <http://www.kanzaki.com/docs/ical/> documents.
+    0.03
 
 SYNOPSIS
   Application
@@ -55,6 +51,18 @@ SYNOPSIS
           json => {json => $ical}
         );
       };
+
+DESCRIPTION
+    Mojolicious::Plugin::Ical is a Mojolicious plugin for generating
+    iCalendar <http://www.kanzaki.com/docs/ical/> documents.
+
+    This plugin will...
+
+    *   Add the helper "reply.ical".
+
+    *   Add ".ical" type to "types" in Mojolicious.
+
+    *   Add a handler "ical" to "renderer" in Mojolicious.
 
 HELPERS
   reply.ical
