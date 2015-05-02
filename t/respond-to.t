@@ -26,7 +26,7 @@ use Test::More;
 
 my $t = Test::Mojo->new;
 
-$t->get_ok('/calendar.json')->status_is(200)->header_is('Content-Type', 'application/json')
+$t->get_ok('/calendar.json')->status_is(200)->header_like('Content-Type', qr{^application/json})
   ->json_is('/events/0/description', 'Cool description');
 
 $t->get_ok('/calendar.ical')->status_is(200)->header_is('Content-Type', 'text/calendar');

@@ -1,5 +1,8 @@
 Changelog for Mojolicious::Plugin::Ical
 
+0.04
+       * Fix Content-Type test in t/respond-to.t
+
 0.03     Mon Apr  6 08:59:39 2015
        * Improved documentation
        * Fix t/synopsis.t
