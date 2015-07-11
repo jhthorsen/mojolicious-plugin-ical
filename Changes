@@ -1,5 +1,8 @@
 Revision history for perl distribution Mojolicious-Plugin-Ical
 
+0.05 Not Released
+ - Skip test since regex fail with long hostname
+
 0.04 2015-05-02T09:35:13+0200
  - Fix Content-Type test in t/respond-to.t
 
