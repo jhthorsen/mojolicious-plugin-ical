@@ -1,6 +1,6 @@
 Revision history for perl distribution Mojolicious-Plugin-Ical
 
-0.05 Not Released
+0.05 2015-07-11T12:31:12+0200
  - Skip test since regex fail with long hostname
 
 0.04 2015-05-02T09:35:13+0200

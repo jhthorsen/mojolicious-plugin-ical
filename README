@@ -2,7 +2,7 @@ NAME
     Mojolicious::Plugin::Ical - Generate .ical documents
 
 VERSION
-    0.04
+    0.05
 
 SYNOPSIS
   Application
