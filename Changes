@@ -1,6 +1,6 @@
 Revision history for perl distribution Mojolicious-Plugin-Ical
 
-0.06 Not Released
+0.06 2024-08-07T20:53:02
  - Fix failing tests
  - Updated syntax
  - Module is back on CPAN
