@@ -1,5 +1,8 @@
 Revision history for perl distribution Mojolicious-Plugin-Ical
 
+0.07 Not Released
+ - 0.06 seems not be be uploaded to CPAN
+
 0.06 2024-08-07T20:53:02
  - Fix failing tests
  - Updated syntax

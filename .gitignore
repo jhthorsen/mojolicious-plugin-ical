@@ -13,3 +13,5 @@
 /META*
 /MYMETA*
 /pm_to_blib
+/MANIFEST
+/Mojolicious-Plugin-Ical-*.tar.gz
