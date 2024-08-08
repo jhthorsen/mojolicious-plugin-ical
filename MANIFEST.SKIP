@@ -58,4 +58,3 @@
 ^local/
 ^MANIFEST\.SKIP
 ^README\.pod
-Mojolicious-Plugin-Ical-.*\.tar\.gz
