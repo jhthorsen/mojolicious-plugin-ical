@@ -5,7 +5,7 @@ use POSIX         ();
 use Sys::Hostname ();
 use Text::vFile::asData;
 
-our $VERSION = '0.07';
+our $VERSION = '1.00';
 
 sub register {
   my ($self, $app, $config) = @_;
